@@ -89,23 +89,27 @@ router.get('/lend/:title', (req, res) => {
   let showTitle = req.params.title;
   let showBook = books.find(({title}) => title == showTitle)  
   showBook.rented = true;
-  
   let lendBook = `<div>
-                    <h2>Lend book: <br/>${showBook.title}</h2> 
                     <form action="/books/lend" method="post">
-                      <div>Account number <input type="number" name="accountNumber"></div>
-                      <div>Name <input type="text" name="name"></div>
-                      <div>Email <input type="email" name="email"></div>
-                      <div><button type="submit">Lend</button></div>
+                      <label for="accountNo">
+                        Lend book:
+                        <h2>${req.params.title}</h2>
+                        <input type="number" id="accountNo" name="accountNumber" placeholder="Account number">
+                        <input type="hidden" id="custId" name="bookTitle" value="${showTitle}">
+                      </label>
+                      <button type="submit">Lend</button>
                     </form>
                   </div>`
-  //capture bookTitle in the form somehow?
+           
   res.send(lendBook);
 });
 
 router.post("/lend", (req, res) => {
-  lentBooks.push({AccountNumber: req.body.accountNumber, Name: req.body.name, Email: req.body.email}
-)
+  let showAccountNo = req.body.accountNumber;
+  let book = books.find(({title}) => title == req.body.bookTitle)  
+  let showMember = members.find(({accountNumber}) => accountNumber == showAccountNo)
+  showMember.rentedBooks.push({book})
+  console.log("showmembers.rentedBooks", showMember.rentedBooks, "showMember", showMember)
   res.redirect("/books");
 });
 
@@ -156,7 +160,7 @@ router.post("/createAccount", (req, res) => {
   };
   let accountNr = randomNumber.join("");
   console.log("randomNumber", randomNumber)
-  let member = {accountNumber: accountNr, firstName: req.body.firstName, lastName: req.body.lastName, email: req.body.email, rentedBooks: ""};
+  let member = {accountNumber: accountNr, firstName: req.body.firstName, lastName: req.body.lastName, email: req.body.email, rentedBooks: []};
   members.push(member);
   res.redirect(`/books/myAccount/${req.body.firstName}`)
 });
@@ -167,7 +171,7 @@ router.post("/createAccount", (req, res) => {
 // SHOW MY ACCOUNT
 router.get('/myAccount/:firstName', (req, res) => {
   let showTitle = req.params.firstName;
-  console.log(members);
+  console.log("Members", members);
   let showMember = members.find(({firstName}) => firstName == showTitle)  
   console.log("showTitle", showTitle)
   console.log("showmember", showMember)
@@ -183,13 +187,11 @@ router.get('/myAccount/:firstName', (req, res) => {
   res.send(memberInfo);
 });
 
-router.post("/myAccount", (req, res) => {
-  let whatever;
+// router.post("/myAccount", (req, res) => {
 
-//<h2>${req.params.Firstname}${req.body.firstName}</h2>
 
-  res.redirect("")
-});
+//   res.redirect("")
+// });
 
 
 
