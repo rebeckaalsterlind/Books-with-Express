@@ -1,6 +1,9 @@
 const express = require('express');
 const router = express.Router();
 
+const rand = require("random-key");
+
+
 const books = [
   {title: "A Short History of Nearly Everything", author: "Bill Bryson", language: "English", pages: 672, id: "A short history of nearly everything", rented: false},
   {title: "The Body", author: "Bill Bryson", language: "English", pages: 544, id: "The Body", rented: false},
@@ -109,7 +112,7 @@ router.post("/lend", (req, res) => {
   let book = books.find(({title}) => title == req.body.bookTitle)  
   let showMember = members.find(({accountNumber}) => accountNumber == showAccountNo)
   showMember.rentedBooks.push({book})
-  console.log("showmembers.rentedBooks", showMember.rentedBooks, "showMember", showMember)
+  console.log("showmembers.rentedBooks", showMember.rentedBooks, "showMember");
   res.redirect("/books");
 });
 
@@ -154,12 +157,7 @@ router.get('/createAccount', (req, res) => {
 });
 
 router.post("/createAccount", (req, res) => {
-  let randomNumber = [];
-  for (let i=0; i<6; i++){
-    randomNumber.push(Math.floor(Math.random() * 10));
-  };
-  let accountNr = randomNumber.join("");
-  console.log("randomNumber", randomNumber)
+  let accountNr = rand.generateDigits(5);
   let member = {accountNumber: accountNr, firstName: req.body.firstName, lastName: req.body.lastName, email: req.body.email, rentedBooks: []};
   members.push(member);
   res.redirect(`/books/myAccount/${req.body.firstName}`)
@@ -180,7 +178,7 @@ router.get('/myAccount/:firstName', (req, res) => {
                     <p>Name: ${showMember.firstName} ${showMember.lastName}</p> 
                     <p>Account number: ${showMember.accountNumber}</p> 
                     <p>Email: ${showMember.email}</p> 
-                    <p>Rented books: ${showMember.rentedBooks}</p> 
+                    <p>Rented books: ${showMember.rentedBooks.book}</p> 
                     <a href="/books">Home</a>
                   </div>`
 
