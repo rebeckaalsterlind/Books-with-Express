@@ -1,50 +1,65 @@
 const express = require('express');
 const router = express.Router();
-
+const fs = require("fs");
+// const cors = require("cors");
+// router.use(cors());
 const rand = require("random-key");
 
 
-const books = [
-  {title: "A Short History of Nearly Everything", author: "Bill Bryson", language: "English", pages: 672, id: "A short history of nearly everything", rented: false},
-  {title: "The Body", author: "Bill Bryson", language: "English", pages: 544, id: "The Body", rented: false},
-  {title: "The Almost Nearly Perfect People", author: "Michael Booth", language: "English", pages: 416, id: "Book 3", rented: true}
-];
+// const books = [
+//   {title: "A Short History of Nearly Everything", author: "Bill Bryson", language: "English", pages: 672, id: "A short history of nearly everything", rented: false},
+//   {title: "The Body", author: "Bill Bryson", language: "English", pages: 544, id: "The Body", rented: false},
+//   {title: "The Almost Nearly Perfect People", author: "Michael Booth", language: "English", pages: 416, id: "Book 3", rented: true}
+// ];
+ 
 const lentBooks = [];
-const members = [];
+//const members = [];
 /* GET users listing. */
 
 
 
 // LIST ALL BOOKS 
 router.get('/', function(req, res, next) {
+  fs.readFile("books.json", (err, data) => {
+    if(err) {
+      console.log(err)
+    }
+    let books = JSON.parse(data);
+    
+    let printBooks = `<div><h2>Books to rent</h2>`
 
-  let printBooks = `<div><h2>Books to rent</h2>`
+    for (let book in books) {
+      printBooks += `<div>
+                      <a href="/books/book/${books[book].title}">${books[book].title}</a>
+                      <a href="/books/lend/${books[book].title}">${(books[book].rented) ? "" : "[Lend]" }</a>
+                      ${(books[book].rented) ? "[Rented]" : ""}
+                    </div>`
+    };
+    
+    printBooks +=`</div><br />
+                  <div><a href="/books/add">Add new book</a></div>
+                  <div><a href="/books/return">Return a book</a></div>
+                  <div><a href="/books/createAccount">Create an account</a></div>
+                  <div><a href="/books/myAccount">My account</a></div>`
 
-  for (let book in books) {
-    printBooks += `<div>
-                    <a href="/books/book/${books[book].title}">${books[book].title}</a>
-                    <a href="/books/lend/${books[book].title}">${(books[book].rented) ? "" : "[Lend]" }</a>
-                     ${(books[book].rented) ? "[Rented]" : ""}
-                  </div>`
-  };
+
+    res.send(printBooks);
+  });
   
-  printBooks +=`</div><br />
-                <div><a href="/books/add">Add new book</a></div>
-                <div><a href="/books/return">Return a book</a></div>
-                <div><a href="/books/createAccount">Create an account</a></div>
-                <div><a href="/books/myAccount">My account</a></div>`
-
-
-  res.send(printBooks);
 });
 
 
 // SHOW INFO ABOUT A BOOK
 router.get('/book/:title', (req, res) => {
-  let showId = req.params.title;
-  let showBook = books.find(({title}) => title == showId)  // console.log(req.body)
   
-  let bookInfo = `<div>
+  fs.readFile("books.json", (err, data) => {
+    
+    if(err) console.log(err);
+    let showId = req.params.title;
+    let books = JSON.parse(data); 
+    let showBook = books.find(({title}) => title == showId)  
+  
+    let bookInfo = `<div>
                     <h2>${showBook.title}</h2> 
                      <div>Author: ${showBook.author} </div>
                      <div>Language: ${showBook.language} </div>
@@ -53,9 +68,12 @@ router.get('/book/:title', (req, res) => {
                      ${(showBook.rented) ? "[Rented]" : ""}
                   </div>`
 
-  res.send(bookInfo);
+    res.send(bookInfo);
+  });
+  
 });
 
+//uneccesseary??
 router.post("/book:title", (req, res) => {
   res.redirect("/books")
 });
@@ -79,8 +97,19 @@ router.get('/add', (req, res) => {
 });
 
 router.post("/add", (req, res) => {
-  let newBook = {title: req.body.title, author: req.body.author, pages: req.body.pages, language: req.body.language, id: req.body.title, rented: false};
-  books.push(newBook);
+  fs.readFile("books.json", (err, data) => {
+    if(err) console.log(err);
+    let books = JSON.parse(data); 
+
+    let newBook = {title: req.body.title, author: req.body.author, pages: req.body.pages, language: req.body.language, id: req.body.title, rented: false};
+    books.push(newBook);
+    
+    fs.writeFile("books.json", JSON.stringify(books, null, 2), function(err) {
+      if(err) console.log(err);
+    });
+
+  });
+
 
   res.redirect("/books")
 });
@@ -90,29 +119,56 @@ router.post("/add", (req, res) => {
 // LEND A BOOK 
 router.get('/lend/:title', (req, res) => {
   let showTitle = req.params.title;
-  let showBook = books.find(({title}) => title == showTitle)  
-  showBook.rented = true;
+
   let lendBook = `<div>
-                    <form action="/books/lend" method="post">
-                      <label for="accountNo">
-                        Lend book:
-                        <h2>${req.params.title}</h2>
-                        <input type="number" id="accountNo" name="accountNumber" placeholder="Account number">
-                        <input type="hidden" id="custId" name="bookTitle" value="${showTitle}">
-                      </label>
-                      <button type="submit">Lend</button>
-                    </form>
-                  </div>`
-           
+                          <form action="/books/lend" method="post">
+                            <label for="accountNo">
+                              Lend book:
+                              <h2>${req.params.title}</h2>
+                              <input type="number" id="accountNo" name="accountNumber" placeholder="Account number">
+                              <input type="hidden" id="custId" name="bookTitle" value="${showTitle}">
+                            </label>
+                            <button type="submit">Lend</button>
+                          </form>
+                        </div>`;
+    
   res.send(lendBook);
 });
 
 router.post("/lend", (req, res) => {
   let showAccountNo = req.body.accountNumber;
-  let book = books.find(({title}) => title == req.body.bookTitle)  
-  let showMember = members.find(({accountNumber}) => accountNumber == showAccountNo)
-  showMember.rentedBooks.push({book})
-  console.log("showmembers.rentedBooks", showMember.rentedBooks, "showMember");
+
+  fs.readFile("members.json", (err, data) => {
+    if(err) console.log(err);
+    let members = JSON.parse(data);
+  
+    let showMember = members.find(({accountNumber}) => accountNumber == showAccountNo);
+    if(showMember){
+
+      fs.readFile("books.json", (err, data) => {
+        if(err) console.log(err);
+        let books = JSON.parse(data);
+
+        let book = books.find(({title}) => title == req.body.bookTitle); 
+        showMember.rentedBooks.push({book});
+        book.rented = true; 
+
+        fs.writeFile("books.json", JSON.stringify(books, null, 2), function(err) {
+          if(err) console.log(err);
+        });
+
+        fs.writeFile("members.json", JSON.stringify(members, null, 2), function(err) {
+          if(err) console.log(err);
+        });
+
+      });
+        
+    } else{
+      console.log("Användare finns inte")
+    }
+   
+  });
+   
   res.redirect("/books");
 });
 
@@ -132,9 +188,20 @@ router.get('/return', (req, res) => {
 });
 
 router.post("/return", (req, res) => {
-  let showReturned = req.body.returned;
-  let showBook = books.find(({title}) => title == showReturned)
-  showBook.rented = false;
+
+  fs.readFile("books.json", (err, data) => {
+    if(err) console.log(err);
+    let books = JSON.parse(data);
+    
+    let showReturned = req.body.returned;
+    let showBook = books.find(({title}) => title.toLowerCase() == showReturned.toLowerCase())
+    showBook.rented = false;
+
+    fs.writeFile("books.json", JSON.stringify(books, null, 2), function(err) {
+      if(err) console.log(err);
+    });
+
+  });
 
   res.redirect("/books")
 });
@@ -159,7 +226,19 @@ router.get('/createAccount', (req, res) => {
 router.post("/createAccount", (req, res) => {
   let accountNr = rand.generateDigits(5);
   let member = {accountNumber: accountNr, firstName: req.body.firstName, lastName: req.body.lastName, email: req.body.email, rentedBooks: []};
-  members.push(member);
+  
+  fs.readFile("members.json", (err, data) => {
+    if(err) console.log(err);
+    let members = JSON.parse(data);
+
+    members.push(member);
+
+    fs.writeFile("members.json", JSON.stringify(members, null, 2), function(err) {
+      if(err) console.log(err);
+    });
+
+  });
+
   res.redirect(`/books/myAccount/${req.body.firstName}`)
 });
 
@@ -168,21 +247,27 @@ router.post("/createAccount", (req, res) => {
 
 // SHOW MY ACCOUNT
 router.get('/myAccount/:firstName', (req, res) => {
+  
   let showTitle = req.params.firstName;
-  console.log("Members", members);
-  let showMember = members.find(({firstName}) => firstName == showTitle)  
-  console.log("showTitle", showTitle)
-  console.log("showmember", showMember)
-  let memberInfo = `<div>
-                    <h2>My account</h2>
-                    <p>Name: ${showMember.firstName} ${showMember.lastName}</p> 
-                    <p>Account number: ${showMember.accountNumber}</p> 
-                    <p>Email: ${showMember.email}</p> 
-                    <p>Rented books: ${showMember.rentedBooks.book}</p> 
-                    <a href="/books">Home</a>
-                  </div>`
+  
+  fs.readFile("members.json", (err, data) => {
+    if(err) console.log(err);
+    let members = JSON.parse(data);
 
-  res.send(memberInfo);
+    let showMember = members.find(({firstName}) => firstName == showTitle);  
+
+    let memberInfo = `<div>
+                      <h2>My account</h2>
+                      <p>Name: ${showMember.firstName} ${showMember.lastName}</p> 
+                      <p>Account number: ${showMember.accountNumber}</p> 
+                      <p>Email: ${showMember.email}</p> 
+                      <p>Rented books: ${(showMember.rentedBooks.book) ? "No books rented" : showMember.rentedBooks.book}</p> 
+                      <a href="/books">Home</a>
+                    </div>`
+
+    res.send(memberInfo);
+  });  
+  
 });
 
 // router.post("/myAccount", (req, res) => {

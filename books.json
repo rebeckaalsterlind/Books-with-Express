@@ -1,5 +1,42 @@
 [
-    {"title": "A Short History of Nearly Everything", "author": "Bill Bryson", "language": "English", "pages": 672, "id": "A short history of nearly everything", "rented": false},
-    {"title": "The Body", "author": "Bill Bryson", "language": "English", "pages": 544, "id": "The Body", "rented": false},
-    {"title": "The Almost Nearly Perfect People", "author": "Michael Booth", "language": "English", "pages": 416, "id": "Book 3", "rented": true}
+  {
+    "title": "A Short History of Nearly Everything",
+    "author": "Bill Bryson",
+    "language": "English",
+    "pages": 672,
+    "id": "A short history of nearly everything",
+    "rented": true
+  },
+  {
+    "title": "The Body",
+    "author": "Bill Bryson",
+    "language": "English",
+    "pages": 544,
+    "id": "The Body",
+    "rented": false
+  },
+  {
+    "title": "The Almost Nearly Perfect People",
+    "author": "Michael Booth",
+    "language": "English",
+    "pages": 416,
+    "id": "Book 3",
+    "rented": true
+  },
+  {
+    "title": "titel ",
+    "author": "author",
+    "pages": "123",
+    "language": "English",
+    "id": "titel ",
+    "rented": false
+  },
+  {
+    "title": "asd",
+    "author": "ffagf",
+    "pages": "123",
+    "language": "swedish",
+    "id": "asd",
+    "rented": true
+  }
 ]
