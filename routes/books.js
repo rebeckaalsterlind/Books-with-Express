@@ -3,6 +3,9 @@ const router = express.Router();
 const fs = require("fs");
 const rand = require("random-key");
 
+const headstyle = `<link rel="stylesheet" href="/stylesheets/style.css">`;
+
+
 /* GET users listing. */
 // LIST ALL BOOKS 
 router.get('/', function(req, res, next) {
@@ -12,7 +15,7 @@ router.get('/', function(req, res, next) {
     }
     let books = JSON.parse(data);
     
-    let printBooks = `<div><h2>Books to rent</h2>`
+    let printBooks = headstyle + `<div><h2>Books to rent</h2>`;
 
     for (let book in books) {
       printBooks += `<div>
@@ -146,11 +149,11 @@ router.post("/lend", (req, res) => {
         fs.writeFile("members.json", JSON.stringify(members, null, 2), function(err) {
           if(err) console.log(err);
         });
-        res.redirect(`/books/myAccount/:${showMember.firstName}`);
+        res.redirect(`/books/myAccount/${showMember.firstName}`);
       });
         
     } else{
-      res.redirect("/books/");
+      console.log('användare hittades inte');
     }
    
   });
@@ -225,26 +228,33 @@ router.post("/createAccount", (req, res) => {
 
   });
 
-  res.redirect(`/books/myAccount/${req.body.firstName}`)
+  res.redirect('/books/myAccount/' + req.body.firstName);
 });
 
 
  
 
 // SHOW MY ACCOUNT
-router.get('/myAccount/:firstName', (req, res) => {
-  
-  let showTitle = req.params.firstName;
+router.get("/myAccount/:name", (req, res) => {
+  console.log('req.params.firstName', req.params.name);
+  let incomingName = req.params.name;
   
   fs.readFile("members.json", (err, data) => {
     if(err) console.log(err);
     let members = JSON.parse(data);
+    
+    let showMember = members.find(({firstName}) => firstName == incomingName);
+    
+    fs.readFile("books.json", (err, data) => {
+      if(err) console.log(err);
+      let books = JSON.parse(data);
 
-    let showMember = members.find(({firstName}) => firstName == showTitle);  
+    });
+
 
     let memberInfo = `<div>
                       <h2>My account</h2>
-                      <p>Name: ${showMember.firstName} ${showMember.lastName}</p> 
+                     <p>Name: ${showMember.firstName} ${showMember.lastName}</p> 
                       <p>Account number: ${showMember.accountNumber}</p> 
                       <p>Email: ${showMember.email}</p> 
                       <p>Rented books: ${(showMember.rentedBooks.book == undefined) ? "No books rented" : showMember.rentedBooks.book}</p> 
@@ -256,6 +266,9 @@ router.get('/myAccount/:firstName', (req, res) => {
   
 });
 
+// router.post("/myAccount:name", (req, res) => {
+//   res.redirect("/books")
+// });
 
 
 module.exports = router;

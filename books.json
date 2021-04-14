@@ -13,7 +13,7 @@
     "language": "English",
     "pages": 544,
     "id": "The Body",
-    "rented": false
+    "rented": true
   },
   {
     "title": "The Almost Nearly Perfect People",
@@ -21,6 +21,14 @@
     "language": "English",
     "pages": 416,
     "id": "Book 3",
+    "rented": true
+  },
+  {
+    "title": "boktitel",
+    "author": "författare",
+    "pages": "1234",
+    "language": "franska",
+    "id": "boktitel",
     "rented": true
   }
 ]

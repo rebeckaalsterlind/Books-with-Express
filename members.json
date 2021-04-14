@@ -14,64 +14,6 @@
           "id": "The Body",
           "rented": true
         }
-      },
-      {
-        "book": {
-          "title": "The Body",
-          "author": "Bill Bryson",
-          "language": "English",
-          "pages": 544,
-          "id": "The Body",
-          "rented": true
-        }
-      },
-      {
-        "book": {
-          "title": "The Body",
-          "author": "Bill Bryson",
-          "language": "English",
-          "pages": 544,
-          "id": "The Body",
-          "rented": true
-        }
-      },
-      {
-        "book": {
-          "title": "The Body",
-          "author": "Bill Bryson",
-          "language": "English",
-          "pages": 544,
-          "id": "The Body",
-          "rented": true
-        }
-      },
-      {
-        "book": {
-          "title": "The Body",
-          "author": "Bill Bryson",
-          "language": "English",
-          "pages": 544,
-          "id": "The Body",
-          "rented": true
-        }
-      }
-    ]
-  },
-  {
-    "accountNumber": "60791",
-    "firstName": "Elin",
-    "lastName": "Nilsson",
-    "email": "elin@gmail.com",
-    "rentedBooks": [
-      {
-        "book": {
-          "title": "The Body",
-          "author": "Bill Bryson",
-          "language": "English",
-          "pages": 544,
-          "id": "The Body",
-          "rented": true
-        }
       }
     ]
   },
@@ -108,6 +50,13 @@
     "firstName": "anna",
     "lastName": "andersson",
     "email": "anna@gmail.com",
+    "rentedBooks": []
+  },
+  {
+    "accountNumber": "88754",
+    "firstName": "my",
+    "lastName": "ek",
+    "email": "my@ek.com",
     "rentedBooks": []
   }
 ]
