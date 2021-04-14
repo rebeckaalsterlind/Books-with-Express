@@ -1,23 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const fs = require("fs");
-// const cors = require("cors");
-// router.use(cors());
 const rand = require("random-key");
 
-
-// const books = [
-//   {title: "A Short History of Nearly Everything", author: "Bill Bryson", language: "English", pages: 672, id: "A short history of nearly everything", rented: false},
-//   {title: "The Body", author: "Bill Bryson", language: "English", pages: 544, id: "The Body", rented: false},
-//   {title: "The Almost Nearly Perfect People", author: "Michael Booth", language: "English", pages: 416, id: "Book 3", rented: true}
-// ];
- 
-const lentBooks = [];
-//const members = [];
 /* GET users listing. */
-
-
-
 // LIST ALL BOOKS 
 router.get('/', function(req, res, next) {
   fs.readFile("books.json", (err, data) => {
@@ -39,8 +25,7 @@ router.get('/', function(req, res, next) {
     printBooks +=`</div><br />
                   <div><a href="/books/add">Add new book</a></div>
                   <div><a href="/books/return">Return a book</a></div>
-                  <div><a href="/books/createAccount">Create an account</a></div>
-                  <div><a href="/books/myAccount">My account</a></div>`
+                  <div><a href="/books/createAccount">Create an account</a></div>`
 
 
     res.send(printBooks);
@@ -65,7 +50,8 @@ router.get('/book/:title', (req, res) => {
                      <div>Language: ${showBook.language} </div>
                      <div>Pages: ${showBook.pages} </div>
                      <a href="/books/lend/${showBook.title}">${(showBook.rented) ? "" : "[Lend]" }</a>
-                     ${(showBook.rented) ? "[Rented]" : ""}
+                     ${(showBook.rented) ? "[Rented]" : ""}<br />
+                     <a href="/books">Home</a>
                   </div>`
 
     res.send(bookInfo);
@@ -152,7 +138,7 @@ router.post("/lend", (req, res) => {
         let book = books.find(({title}) => title == req.body.bookTitle); 
         showMember.rentedBooks.push({book});
         book.rented = true; 
-
+        
         fs.writeFile("books.json", JSON.stringify(books, null, 2), function(err) {
           if(err) console.log(err);
         });
@@ -160,16 +146,16 @@ router.post("/lend", (req, res) => {
         fs.writeFile("members.json", JSON.stringify(members, null, 2), function(err) {
           if(err) console.log(err);
         });
-
+        res.redirect(`/books/myAccount/:${showMember.firstName}`);
       });
         
     } else{
-      console.log("Användare finns inte")
+      res.redirect("/books/");
     }
    
   });
    
-  res.redirect("/books");
+  
 });
 
 
@@ -261,7 +247,7 @@ router.get('/myAccount/:firstName', (req, res) => {
                       <p>Name: ${showMember.firstName} ${showMember.lastName}</p> 
                       <p>Account number: ${showMember.accountNumber}</p> 
                       <p>Email: ${showMember.email}</p> 
-                      <p>Rented books: ${(showMember.rentedBooks.book) ? "No books rented" : showMember.rentedBooks.book}</p> 
+                      <p>Rented books: ${(showMember.rentedBooks.book == undefined) ? "No books rented" : showMember.rentedBooks.book}</p> 
                       <a href="/books">Home</a>
                     </div>`
 
@@ -269,12 +255,6 @@ router.get('/myAccount/:firstName', (req, res) => {
   });  
   
 });
-
-// router.post("/myAccount", (req, res) => {
-
-
-//   res.redirect("")
-// });
 
 
 

@@ -62,7 +62,18 @@
     "firstName": "Elin",
     "lastName": "Nilsson",
     "email": "elin@gmail.com",
-    "rentedBooks": []
+    "rentedBooks": [
+      {
+        "book": {
+          "title": "The Body",
+          "author": "Bill Bryson",
+          "language": "English",
+          "pages": 544,
+          "id": "The Body",
+          "rented": true
+        }
+      }
+    ]
   },
   {
     "accountNumber": "46886",
@@ -83,6 +94,20 @@
     "firstName": "jan",
     "lastName": "jansson",
     "email": "jan@gmail.com",
+    "rentedBooks": []
+  },
+  {
+    "accountNumber": "29659",
+    "firstName": "sofia",
+    "lastName": "larsson",
+    "email": "sofia@gmail.com",
+    "rentedBooks": []
+  },
+  {
+    "accountNumber": "74911",
+    "firstName": "anna",
+    "lastName": "andersson",
+    "email": "anna@gmail.com",
     "rentedBooks": []
   }
 ]

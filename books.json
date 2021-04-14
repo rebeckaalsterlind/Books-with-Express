@@ -22,21 +22,5 @@
     "pages": 416,
     "id": "Book 3",
     "rented": true
-  },
-  {
-    "title": "titel ",
-    "author": "author",
-    "pages": "123",
-    "language": "English",
-    "id": "titel ",
-    "rented": false
-  },
-  {
-    "title": "asd",
-    "author": "ffagf",
-    "pages": "123",
-    "language": "swedish",
-    "id": "asd",
-    "rented": true
   }
 ]
