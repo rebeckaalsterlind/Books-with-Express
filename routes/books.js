@@ -5,9 +5,6 @@ const rand = require("random-key");
 
 const headstyle = `<link rel="stylesheet" href="/stylesheets/style.css">`;
 
-router.get('/', function(req, res, next) {
-  res.render('books', { title: 'Books' });
-});
 
 
 /* GET users listing. */
